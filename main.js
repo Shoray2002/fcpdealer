@@ -5,7 +5,7 @@ import { GUI } from "https://unpkg.com/dat.gui@0.7.7/build/dat.gui.module.js";
 let renderer, scene, camera, controls;
 const loader = new GLTFLoader().setPath("./");
 const params = {
-  color: '#ffffff'
+  color: "#ffffff",
 };
 init();
 animate();
@@ -28,6 +28,15 @@ function init() {
   scene.add(dirLight);
   loader.load("theend2.glb", function (gltf) {
     let model = gltf.scene;
+    console.log(model.children);
+    model.children.find((child) => {
+      if (child.name === "Plane") {
+        const newMaterial = child.material.clone();
+        child.material = newMaterial;
+        newMaterial.color.set(params.color);
+      }
+    });
+    //
     model.scale.set(50, 50, 50);
     model.translateZ(70);
     model.translateY(-20);
