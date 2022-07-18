@@ -1,9 +1,12 @@
 import * as THREE from "three";
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js";
-let renderer, scene, camera, cube, controls;
+import { GUI } from "https://unpkg.com/dat.gui@0.7.7/build/dat.gui.module.js";
+let renderer, scene, camera, controls;
 const loader = new GLTFLoader().setPath("./");
-
+const params = {
+  color: '#ffffff'
+};
 init();
 animate();
 
@@ -17,9 +20,10 @@ function init() {
     10000
   );
   camera.position.set(100, 150, 110);
+  const gui = new GUI();
   const ambientLight = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambientLight);
-  const dirLight = new THREE.DirectionalLight(0xefefff, 2);
+  const dirLight = new THREE.DirectionalLight(0xefefff, 1.5);
   dirLight.position.set(10, 10, 10);
   scene.add(dirLight);
   loader.load("theend2.glb", function (gltf) {
@@ -28,8 +32,10 @@ function init() {
     model.translateZ(70);
     model.translateY(-20);
     scene.add(model);
+    gui.addColor(params, "color").onChange(function (value) {
+      model.children[1].material.color.set(value);
+    });
   });
-
   renderer = new THREE.WebGLRenderer({
     canvas: document.getElementById("canvas"),
     antialias: true,
